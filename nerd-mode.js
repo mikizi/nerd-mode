@@ -1,10 +1,11 @@
 /**
  * Created by mikiz on 13/05/2018.
  */
+window.nerdData = {
+    store: []
+};
 
 var refresh_time = 3000;//3 sec
-window.store = [];
-var oldf = console.log;
 
 getParameterByName = function (name, url) {
     if (!url) url = window.location.href;
@@ -38,15 +39,13 @@ nerdMode = function () {
     document.body.innerHTML += style;
     document.body.innerHTML += consoleEl;
 
-
-    window.store.push('Welcome to the jungle baby  ...');
-    old_store = window.store;
-    document.querySelector('.nerd-mode ol').innerHTML += '<li>' + JSON.stringify(window.store[0]) + '</li>';
+    old_store = 'Welcome to the jungle baby  ...';
+    document.querySelector('.nerd-mode ol').innerHTML += '<li>' + JSON.stringify(old_store) + '</li>';
 
     setInterval(function () {
-        if (JSON.stringify(window.store) !== JSON.stringify(old_store)) {
-            document.querySelector('.nerd-mode ol').innerHTML = '<li>' + window.store.join("</li><li>") + '</li>';
-            old_store = JSON.parse(JSON.stringify(window.store));
+        if (JSON.stringify(window.nerdData.store) !== JSON.stringify(old_store)) {
+            document.querySelector('.nerd-mode ol').innerHTML = '<li>' + window.nerdData.store.join("</li><li>") + '</li>';
+            old_store = JSON.parse(JSON.stringify(window.nerdData.store));
         }
     }, refresh_time);
 };
@@ -54,13 +53,6 @@ nerdMode = function () {
 if (getParameterByName('nerd-mode') === '1') {
     nerdMode();
 }
-
-console.log = function () {
-    store.push(arguments[0]);
-    if (window.location.origin !== 'https://app.reshet.tv' || getParameterByName('nerd-mode') > 0) {
-        oldf.apply(console, arguments);
-    }
-};
 
 /*polyfill - filter*/
 if (!Array.prototype.filter) {
@@ -90,6 +82,20 @@ if (!Array.prototype.filter) {
     };
 }
 
+
+(function () {
+    if (console.log) {
+        var old_console = console.log;
+    }
+
+    console.log = function () {
+        window.nerdData.store.push(arguments[0]);
+        if (getParameterByName('nerd-mode') > 0) {
+            old_console.apply(console, arguments);
+        }
+    };
+})();
+
 (function () {
     if (window.onerror) {
         var old_prototype = window.onerror.prototype;
@@ -115,4 +121,9 @@ if (!Array.prototype.filter) {
 errorRow = function (err) {
     return '<b style="color:red">' + err + '</b>'
 };
+
+window.addEventListener('error', function(e) {
+    var msg = 'Error 404 on target ' + e.target.src.toString() + ' element type of ' + e.localName;
+    console.log(errorRow(msg));
+}, true);
 
