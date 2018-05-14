@@ -12,4 +12,3 @@ Start debugging your Code using a console system catching errors and console log
 
 Provide code examples and explanations of how to get the project.
 
-snippet describing the license (MIT, Apache, etc.)
