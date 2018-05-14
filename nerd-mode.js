@@ -2,7 +2,9 @@
  * Created by mikiz on 13/05/2018.
  */
 window.nerdData = {
-    store: []
+    store: [],
+    active: false,
+    init:false
 };
 
 var refresh_time = 3000;//3 sec
@@ -53,6 +55,19 @@ nerdMode = function () {
 if (getParameterByName('nerd-mode') === '1') {
     nerdMode();
 }
+
+
+document.addEventListener('keydown', function(event){
+    if(!window.nerdData.active ){
+        if ((event.keyCode == 10 || event.keyCode == 13) && event.ctrlKey){
+            if(!window.nerdData.init)
+                nerdMode();
+            document.getElementsByClassName('nerd-mode')[0].style.display = 'block';
+            window.nerdData.active = true;
+        }
+    }
+
+});
 
 /*polyfill - filter*/
 if (!Array.prototype.filter) {
